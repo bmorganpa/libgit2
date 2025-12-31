@@ -406,11 +406,14 @@ static int local_push(
 
 	   Note that this is only an issue when pushing to the current branch,
 	   but we forbid all pushes just in case */
-	if (!remote_repo->is_bare) {
-		error = GIT_EBAREREPO;
-		git_error_set(GIT_ERROR_INVALID, "local push doesn't (yet) support pushing to non-bare repos.");
-		goto on_error;
-	}
+	/* ALLOW non-bare push since we won't be pushing the currently checked out branch
+	   This should really just verify that the branch is not checked out or check the config
+	   but good enough for now
+	   if (!remote_repo->is_bare) {
+	 	error = GIT_EBAREREPO;
+	 	git_error_set(GIT_ERROR_INVALID, "local push doesn't (yet) support pushing to non-bare repos.");
+	 	goto on_error;
+	   } */
 
 	if ((error = git_repository__item_path(&odb_path, remote_repo, GIT_REPOSITORY_ITEM_OBJECTS)) < 0
 		|| (error = git_str_joinpath(&odb_path, odb_path.ptr, "pack")) < 0)
